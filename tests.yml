@@ -1,0 +1,57 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  primitives:
+    name: consensus primitives
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install test dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run primitive tests
+        run: pytest test_primitives.py -v
+
+  contract:
+    name: current PolicyGate direct tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install test dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run direct-mode contract tests
+        run: pytest test_policy_gate_direct.py -v
+
+  lint:
+    name: GenVM lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install lint tooling
+        run: pip install -r requirements.txt
+
+      - name: Lint PolicyGate
+        run: genvm-lint check PolicyGate.py
+
+      - name: Lint example contract
+        run: genvm-lint check ExampleGatedAccess.py

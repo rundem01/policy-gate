@@ -1,4 +1,4 @@
-# PolicyGate — reviewer fix
+# PolicyGate 
 
 This version directly addresses the three reviewer concerns:
 

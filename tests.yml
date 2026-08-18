@@ -1,57 +1,29 @@
-name: tests
+name: GenLayer Contract Checks
 
 on:
   push:
+    branches: ["main"]
   pull_request:
 
 jobs:
-  primitives:
-    name: consensus primitives
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: "3.11"
 
-      - name: Install test dependencies
-        run: pip install -r requirements.txt
-
-      - name: Run primitive tests
-        run: pytest test_primitives.py -v
-
-  contract:
-    name: current PolicyGate direct tests
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: Install test dependencies
-        run: pip install -r requirements.txt
-
-      - name: Run direct-mode contract tests
-        run: pytest test_policy_gate_direct.py -v
-
-  lint:
-    name: GenVM lint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: Install lint tooling
+      - name: Install GenLayer test tooling
         run: pip install -r requirements.txt
 
       - name: Lint PolicyGate
         run: genvm-lint check PolicyGate.py
 
-      - name: Lint example contract
-        run: genvm-lint check ExampleGatedAccess.py
+      - name: Lint consuming contract
+        run: genvm-lint check GatedTreasury.py
+
+      - name: Run pure tests
+        run: pytest -q tests
